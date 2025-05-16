@@ -1,0 +1,180 @@
+﻿@using Project_QuanAo.Models;
+@{
+    ViewBag.Title = "ThanhToan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var maTK = Session["MaTK"];
+    if (maTK == null)
+    {
+        Response.Redirect(Url.Action("DangNhap", "DangNhap"));
+    }
+    var kh = Session["KhachHang"] as KhachHang;
+    var email = Session["Email"] as string;
+    string HoVaTen = kh.Ho + " " + kh.Ten;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Content/thanh-toan.css">
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-50">
+            <div class="container">
+                @using (Html.BeginForm("ThanhToan", "GioHang", FormMethod.Post, new { id = "formThanhToan" })) 
+                {
+                    <div class="row">
+                        <div class="col-50">
+                            <h3>Thông tin đơn hàng</h3>
+                            <label for="fname"><i class="fa fa-user"></i> Họ và tên</label>
+                            <input class="inp not-include" type="text" id="fname" name="FullName" value="@HoVaTen" placeholder="Nguyễn Văn A" required readonly/>
+
+                            <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                            <input class="inp not-include" type="text" id="email" name="Email" value="@email" placeholder="datledoianhtelamem@gmail.com" required />
+
+                            <label for="city"><i class="fa fa-map-marker"></i> Location</label>
+                            <br />
+                            <select class="form-select mb-3 cbox not-include" id="city"required>
+                                <option value="" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <input type="hidden" id="cityInp" class="not-include" name="Location" />
+                            <select class="form-select mb-3 cbox not-include" id="district" required>
+                                <option value="" selected>Chọn quận huyện</option>
+                            </select>
+                            <input type="hidden" class="not-include" id="districtInp" name="District" />
+                            <select class="form-select cbox not-include" id="ward" required>
+                                <option value="" selected>Chọn phường xã</option>
+                            </select>
+                            <input type="hidden" class="not-include" id="wardInp" name="Ward" />
+                            <br /><br />
+                            <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
+                            <input class="inp not-include" type="text" id="adr" name="Address" placeholder="123 Tây Thạnh" required />
+                            
+                            <label class="radio-label" for="payment_method_id_1002766550">
+                                <div class="radio-input payment-method-checkbox">
+                                    <input type-id="1" id="payment_method_id_1002766550" class="input-radio not-include" name="payment_method_id" type="radio" value="1002766550" checked="">
+                                </div>
+                                <div class="radio-content-input">
+                                    <img class="main-img" src="https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6">
+                                    <div>
+                                        <span class="radio-label-primary">Thanh toán khi giao hàng (COD)</span>
+                                        <span class="quick-tagline hidden"></span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button type="submit">Tiếp tục phần thanh toán</button>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Giỏ hàng -->
+        <div class="cart-info">
+            <h3>Thông Tin Giỏ Hàng</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th><h4>Sản phẩm</h4></th>
+                        <th><h4>Số lượng</h4></th>
+                        <th><h4>Đơn giá</h4></th>
+                        <th><h4>Thành tiền</h4></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TenSP</td>
+                            <td>@item.SoLuong</td>
+                            <td>@item.GiaBan.ToString("N0")</td>
+                            <td>@item.ThanhTien.ToString("N0")</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4">
+                            <h4><b>Tổng tiền:</b> @ViewBag.TongTien.ToString("N0") VND</h4>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        var citis = document.getElementById("city");
+        var districts = document.getElementById("district");
+        var wards = document.getElementById("ward");
+        var Parameter = {
+            url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+            method: "GET",
+            responseType: "application/json",
+        };
+        var promise = axios(Parameter);
+        promise.then(function (result) {
+            renderCity(result.data);
+        });
+
+        function renderCity(data) {
+            for (const x of data) {
+                citis.options[citis.options.length] = new Option(x.Name, x.Id);
+            }
+            citis.onchange = function () {
+                district.length = 1;
+                ward.length = 1;
+                if (this.value != "") {
+                    const result = data.filter(n => n.Id === this.value);
+                    for (const k of result[0].Districts) {
+                        district.options[district.options.length] = new Option(k.Name, k.Id);
+                    }
+                }
+            };
+            district.onchange = function () {
+                ward.length = 1;
+                const dataCity = data.filter((n) => n.Id === citis.value);
+                if (this.value != "") {
+                    const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
+                    for (const w of dataWards) {
+                        wards.options[wards.options.length] = new Option(w.Name, w.Id);
+                    }
+                }
+            };
+        }
+
+        // Kiểm tra dữ liệu khi nhấn vào nút submit
+        document.querySelector('form').addEventListener('submit', function (event) {
+            var fullName = document.getElementById('fname').value;
+            var email = document.getElementById('email').value;
+            var city = document.getElementById('city').value;
+            var district = document.getElementById('district').value;
+            var address = document.getElementById('adr').value;
+
+            // Kiểm tra xem các trường bắt buộc đã được điền đầy đủ chưa
+            if (!fullName || !email || !city || !district || !address) {
+                alert("Vui lòng điền đầy đủ thông tin trước khi tiếp tục.");
+                event.preventDefault();
+            }
+        });
+    </script>
+    <script>
+        document.querySelector('#formThanhToan').addEventListener('submit', function (event) {
+            var citySelect = document.getElementById('city');
+            var districtSelect = document.getElementById('district');
+            var wardSelect = document.getElementById('ward');
+
+            var cityName = citySelect.options[citySelect.selectedIndex].text;
+            var districtName = districtSelect.options[districtSelect.selectedIndex].text;
+            var wardName = wardSelect.options[wardSelect.selectedIndex].text;
+
+            document.getElementById('cityInp').value = cityName;
+            document.getElementById('districtInp').value = districtName;
+            document.getElementById('wardInp').value = wardName;
+        });
+    </script>
+</body>
+</html>

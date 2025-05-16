@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var maLoaiTK = Session["MaLoaiTK"];
+    bool isAdmin = false;
+    if (maLoaiTK != null && ((int)maLoaiTK == 2 || (int)maLoaiTK == 3))
+    {
+        isAdmin = true;
+    }
+    if (!isAdmin)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet" href="~/Content/admin.css">
+</head>
+<body>
+    <section class="page-content">
+        <section class="search-and-user">
+            <form>
+                <input type="search" placeholder="Search Pages...">
+                <button type="submit" aria-label="submit form">
+                    <svg aria-hidden="true">
+                        <use xlink:href="#search"></use>
+                    </svg>
+                </button>
+            </form>
+            <div class="admin-profile">
+                <span class="greeting">Hello admin</span>
+                <div class="notifications">
+                    <span class="badge">1</span>
+                    <svg>
+                        <use xlink:href="#users"></use>
+                    </svg>
+                </div>
+            </div>
+        </section>
+        <section class="grid">
+            <article></article>
+            <article></article>
+            <article></article>
+            <article></article>
+            <article></article>
+            <article></article>
+            <article></article>
+            <article></article>
+        </section>
+    </section>
+</body>
+</html>
+
+

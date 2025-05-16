@@ -1,0 +1,172 @@
+﻿@using Project_QuanAo.Models;
+@model List<HoaDon>
+@{
+    var dbConnect = ViewBag.DBConnection;
+    ViewBag.Title = "QuanLyHoaDon";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var maLoaiTK = Session["MaLoaiTK"];
+    bool isAdmin = false;
+    if (maLoaiTK != null && ((int)maLoaiTK == 2 || (int)maLoaiTK == 3))
+    {
+        isAdmin = true;
+    }
+    if (!isAdmin)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/quanly.css">
+    <style>
+        .sort-options {
+            top: -20;
+            right: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .sort-options label {
+                font-weight: bold;
+            }
+
+        #sort-select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <section>
+            <div class="header-actions">
+                @*<div class="add-product-btn">
+                        <a href="@Url.Action("FormThemKhachHang", "Admin")">
+                            <button class="btn-add-product">Thêm khách hàng</button>
+                        </a>
+                    </div>*@
+
+                @*<div class="search-container">
+                        <form action="@Url.Action("TimKiemKhachHang", "Admin")" method="get" id="searchForm">
+                                <div class="flex-row">
+                                    <input type="text" name="tuKhoa" class="not-include search-bar" id="searchInp" />
+                                    <span id="searchInp"></span>
+                                    <button onclick="SubmitEvent">Tìm kiếm</button>
+                                    </a>
+                                </div>
+                            </form>
+                    </div>*@
+            </div>
+
+            <h2>Quản lý đơn hàng</h2>
+            <div class="sort-options">
+                <label for="sort-select">Chế độ xem:</label>
+                <select id="sort-select" onchange="sortProducts()">
+                    <option value="0" @(Request.QueryString["trangThaiDon"] == "0" ? "selected" : "")>Tất cả đơn</option>
+                    <option value="1" @(Request.QueryString["trangThaiDon"] == "1" ? "selected" : "")>Đơn chờ duyệt</option>
+                    <option value="3" @(Request.QueryString["trangThaiDon"] == "3" ? "selected" : "")>Đơn đã duyệt</option>
+                    <option value="2" @(Request.QueryString["trangThaiDon"] == "2" ? "selected" : "")>Đơn đã hủy</option>
+                </select>
+            </div>
+            @*@if (Model == null || !Model.Any())
+                {
+                    <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                        Không có khách hàng nào phù hợp.
+                    </p>
+                }
+                else
+                {
+                    <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                        Có @Model.Count khách hàng.
+                    </p>
+                }*@
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th><h1>Mã hóa đơn</h1></th>
+                        <th><h1>Ngày đặt</h1></th>
+                        <th><h1>Mã Khách | Tên Khách</h1></th>
+                        <th><h1>Địa Chỉ Giao Hàng</h1></th>
+                        <th><h1>Tổng tiền</h1></th>
+                        <th><h1>Nhân viên duyệt / Hủy</h1></th>
+                        <th><h1>Trạng Thái Đơn</h1></th>
+                        <th><h1>Duyệt</h1></th>
+                        <th><h1>Hủy</h1></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        <ul class="shop-pets">
+                            @foreach (HoaDon item in Model)
+                            {
+                                ConnectKhachHang cKH = new ConnectKhachHang(dbConnect);
+                                ConnectHoaDon cHD = new ConnectHoaDon(dbConnect);
+                                KhachHang kh = cKH.LayKhachHangTheoMa(item.MaKH);
+                                ConnectNhanVien cNV = new ConnectNhanVien(dbConnect);
+                                NhanVien nv = null;
+                                if (item.MaNV != null)
+                                {
+                                    nv = cNV.LayNhanVienTheoMa(item.MaNV.Value);
+                                }
+
+                                string NgayDat = item.NgayDat.ToString("dd/MM/yyyy");
+                            <tr>
+                                <td>@item.MaHD</td>
+                                <td>@NgayDat</td>
+                                <td>@item.MaKH | @kh.Ho @kh.Ten</td>
+                                <td>@item.DiaChiGiaoHang</td>
+                                <td>@item.TongTien</td>
+                                @if (nv != null)
+                                {
+
+                                    <td>@nv.MaNV | @nv.Ten</td>
+                                }
+                                else
+                                {
+                                    <td>@item.MaNV</td>
+                                }
+                                <td>@cHD.LayTenTrangThaiDon(item.MaTTD)</td>
+                                <td>
+                                    @if (item.MaTTD == 1)
+                                    {
+                                        <a href="@Url.Action("DuyetDonHang", "Admin", new { id = item.MaHD })"
+                                           onclick="return confirm('Bạn có muốn duyệt đơn hàng này?');">
+                                            Duyệt
+                                        </a>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.MaTTD == 1)
+                                    {
+                                        <a href="@Url.Action("HuyDonHang", "Admin", new { id = item.MaHD })"
+                                           onclick="return confirm('Bạn có muốn duyệt đơn hàng này?');">
+                                            Hủy
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                            </ul>
+                        }
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+    function sortProducts() {
+        var trangThaiDon = document.getElementById("sort-select").value;
+        var url = '@Html.Raw(Url.Action("QuanLyDonHang", "Admin", new { trangThaiDon = "__trangThaiDon__" }))'.replace('__trangThaiDon__', trangThaiDon);
+        window.location.href = url;
+    }
+    </script>
+</body>
+</html>

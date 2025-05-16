@@ -1,0 +1,99 @@
+﻿@using Project_QuanAo.Models;
+@model List<NhaCungCap>
+@{
+    var dbConnect = ViewBag.DBConnection;
+    ViewBag.Title = "QuanLyNhaCungCap";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var maLoaiTK = Session["MaLoaiTK"];
+    bool isAdmin = false;
+    if (maLoaiTK != null && ((int)maLoaiTK == 2 || (int)maLoaiTK == 3))
+    {
+        isAdmin = true;
+    }
+    if (!isAdmin)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/quanly.css">
+</head>
+<body>
+    <div class="content">
+        <section>
+            <div class="header-actions">
+                <div class="add-product-btn">
+                    <a href="@Url.Action("FormThemNhaCungCap", "Admin")">
+                        <button class="btn-add-product">Thêm nhà cung cấp</button>
+                    </a>
+                </div>
+
+                <div class="search-container">
+                    <form action="@Url.Action("TimKiemNhaCungCap", "Admin")" method="get" id="searchForm">
+                        <div class="flex-row">
+                            <input type="text" name="tuKhoa" class="not-include search-bar" id="searchInp" />
+                            <span id="searchInp"></span>
+                            <button onclick="SubmitEvent">Tìm kiếm</button>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <h2>Quản lý nhà cung cấp</h2>
+            @if (Model == null || !Model.Any())
+            {
+                <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                    Không có nhà cung cấp nào phù hợp.
+                </p>
+            }
+            else
+            {
+        <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+            Có @Model.Count nhà cung cấp.
+        </p>
+            }
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th><h1>Mã nhà cung cấp</h1></th>
+                        <th><h1>Tên nhà cung cấp</h1></th>
+                        <th><h1>Địa chỉ</h1></th>
+                        <th><h1>Số điện thoại</h1></th>
+                        <th><h1>Sửa</h1></th>
+                        <th><h1>Xoá</h1></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        <ul class="shop-pets">
+                            @foreach (NhaCungCap item in Model)
+                            {
+                                ConnectNhaCungCap cNCC = new ConnectNhaCungCap(dbConnect);
+                            <tr>
+                                <td>@item.MaNCC</td>
+                                <td>@item.TenNCC</td>
+                                <td>@item.DiaChi</td>
+                                <td>@item.Sdt</td>
+                                <td><a href="@Url.Action("FormSuaNhaCungCap", "Admin", new { id = item.MaNCC })">Sửa</a></td>
+                                <td>
+                                    <a href="@Url.Action("XoaNhaCungCap", "Admin", new { id = item.MaNCC })"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này?');">
+                                        Xoá
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                            </ul>
+                        }
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

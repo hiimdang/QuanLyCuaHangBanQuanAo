@@ -1,0 +1,102 @@
+﻿@using Project_QuanAo.Models;
+@model List<SanPham>
+@{
+    var dbConnect = ViewBag.DBConnection;
+    ViewBag.Title = "QuanLySanPham";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var maLoaiTK = Session["MaLoaiTK"];
+    bool isAdmin = false;
+    if (maLoaiTK != null && ((int)maLoaiTK == 2 || (int)maLoaiTK == 3))
+    {
+        isAdmin = true;
+    }
+    if (!isAdmin)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/quanly.css">
+</head>
+<body>
+    <div class="content">
+        <section>
+            <div class="header-actions">
+                <div class="add-product-btn">
+                    <a href="@Url.Action("FormThemSanPham", "Admin")">
+                        <button class="btn-add-product">Thêm sản phẩm</button>
+                    </a>
+                </div>
+
+                <div class="search-container">
+                    <form action="@Url.Action("TimKiemSanPham", "Admin")" method="get" id="searchForm">
+                        <div class="flex-row">
+                            <input type="text" name="tuKhoa" class="not-include search-bar" id="searchInp" />
+                            <span id="searchInp"></span>
+                            <button onclick="SubmitEvent">Tìm kiếm</button>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <h2>Quản lý sản phẩm</h2>
+            @if (Model == null || !Model.Any())
+            {
+                <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                    Không có sản phẩm nào phù hợp.
+                </p>
+            }
+            else
+            {
+            <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                Có @Model.Count sản phẩm.
+            </p>
+            }
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th><h1>Mã sản phẩm</h1></th>
+                        <th><h1>Hình ảnh</h1></th>
+                        <th><h1>Tên sản phẩm</h1></th>
+                        <th><h1>Loại sản phẩm</h1></th>
+                        <th><h1>Nhà cung cấp</h1></th>
+                        <th><h1>Sửa</h1></th>
+                        <th><h1>Xoá</h1></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        <ul class="shop-pets">
+                            @foreach (SanPham item in Model)
+                            {
+                                ConnectSanPham cSP = new ConnectSanPham(dbConnect);
+                            <tr>
+                                <td>@item.MaSP</td>
+                                <td><img src="@Url.Content("~/Images/" + item.DuongDanAnh)" /></td>
+                                <td>@item.TenSP</td>
+                                <td>@cSP.LayTenLoaiSPTheoMa(item.MaLoaiSP)</td>
+                                <td>@cSP.LayTenNCCTheoMa(item.MaNCC)</td>
+                                <td><a href="@Url.Action("FormSuaSanPham", "Admin", new { id = item.MaSP })">Sửa</a></td>
+                                <td>
+                                    <a href="@Url.Action("XoaSanPham", "Admin", new { id = item.MaSP })"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                        Xoá
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                            </ul>
+                        }
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+</body>
+</html>

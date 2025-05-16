@@ -1,0 +1,240 @@
+﻿body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+    text-align: left;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    display: table;
+    padding: 0 0 8em 0;
+    background: linear-gradient(45deg, #1E4782 0%, #709DDF 100%);
+    border: 1px solid #1E4782;
+    border-radius: 8px;
+}
+
+    .container th h1 {
+        font-weight: bold;
+        font-size: 1em;
+        text-align: left;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0px;
+    }
+
+    .container td {
+        font-weight: normal;
+        font-size: 1em;
+        -webkit-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.1);
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .container tr:nth-child(odd) {
+        background-color: #E5F1FB;
+    }
+
+    .container tr:nth-child(even) {
+        background-color: #D1E4F7;
+    }
+
+    .container th {
+        background-color: #1E4782;
+    }
+
+    .container td {
+        color: #333;
+    }
+
+        .container td:first-child {
+            color: #1E4782;
+        }
+
+    .container tr:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+td img {
+    max-width: 180px;
+    height: 180px;
+}
+
+.checkout-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 20px;
+    padding-right: 10%;
+}
+
+.total-price {
+    font-size: 1.2em;
+    color: #1E4782;
+    margin-bottom: 10px;
+}
+
+.btn-checkout {
+    background-color: #FF6A6A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .btn-checkout:hover {
+        background-color: #FF4B4B;
+    }
+
+td div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-tang-giam {
+    padding: 5px 12px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-increase {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-decrease {
+    background-color: #FF6A6A;
+    color: white;
+}
+
+button:hover {
+    background-color: #f0f0f0;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.quantity-input {
+    all: unset;
+    width: 50px;
+    text-align: center;
+    padding: 5px;
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+section {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    font-size: 2em;
+    color: #1E4782;
+    margin-bottom: 20px;
+}
+
+.content {
+    padding: 20px;
+}
+
+.add-product-btn {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.btn-add-product {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .btn-add-product:hover {
+        background-color: #45a049;
+    }
+
+    .btn-add-product:active {
+        transform: scale(0.95);
+    }
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-product-btn, .search-container {
+    display: inline-block;
+}
+
+.btn-add-product, .btn-search {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-add-product {
+    background-color: #28a745;
+}
+
+.search-container input {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-left: 20px;
+}
+
+.search-container button {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.container td a {
+    color: #1E4782;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s, transform 0.2s;
+}
+
+    .container td a:hover {
+        color: #FF6A6A;
+        transform: scale(1.1);
+    }
+
+    .container td a:active {
+        transform: scale(0.95);
+    }

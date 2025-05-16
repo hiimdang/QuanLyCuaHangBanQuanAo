@@ -1,0 +1,154 @@
+﻿@using Project_QuanAo.Models;
+@model List<GioHang>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var maTK = Session["MaTK"];
+    bool flag = false;
+    if (maTK != null)
+    {
+        flag = true;
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/gio-hang.css">
+    <style>
+        .right-flex-row{
+            display: flex;
+            justify-content: right;
+        }
+    </style>
+</head>
+<body>
+    <section class="body">
+        <h2>Giỏ hàng</h2>
+        @if (flag) { 
+            <div class="right-flex-row">
+                <a href="@Url.Action("LichSuDonHang","GioHang")" class="pointer-unset">
+                    <button class="btn-confirm not-include">Xem lịch sử đơn hàng</button>
+                </a>
+            </div>
+        }
+        
+        <table class="container">
+            <thead>
+                <tr>
+                    <th><h1>Số thứ tự</h1></th>
+                    <th><h1>Hình ảnh</h1></th>
+                    <th><h1>Tên hàng</h1></th>
+                    <th><h1>Đơn giá</h1></th>
+                    <th><h1>Số lượng</h1></th>
+                    <th><h1>Thành tiền</h1></th>
+                    <th><h1>Xoá</h1></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null && Model.Any())
+                {
+                    int stt = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            <td><img src="@Url.Content("~/Images/" + item.DuongDanAnh)" alt="image" width="50" /></td>
+                            <td>@item.TenSP</td>
+                            <td>@item.GiaBan.ToString("N0")</td>
+
+                            @*<td>
+                                <div>
+                                    <button class="btn-decrease btn-tang-giam" onclick="capNhatSoLuong(@item.MaSP, -1)">-</button>
+                                    <input type="text" class="quantity-input not-include" value="@item.SoLuong" readonly />
+                                    <button class="btn-increase btn-tang-giam" onclick="capNhatSoLuong(@item.MaSP, 1)">+</button>
+                                </div>
+                            </td>*@
+                            <td>
+                                <div>
+                                    <button class="btn-decrease btn-tang-giam" onclick="capNhatSoLuong(@item.MaSP, -1)">-</button>
+                                    <input type="text" class="quantity-input not-include" data-id="@item.MaSP" value="@item.SoLuong" readonly />
+                                    <button class="btn-increase btn-tang-giam" onclick="capNhatSoLuong(@item.MaSP, 1)">+</button>
+                                </div>
+                            </td>
+
+                            <td>@item.ThanhTien.ToString("N0")</td>
+
+                            <td><a href="@Url.Action("XoaThanhPhanGioHang", "GioHang", new { id = item.MaSP })">Xoá</a></td>
+                        </tr>
+                        stt++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Giỏ hàng của bạn hiện đang trống.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="checkout-section">
+            <div class="total-price">
+                Tổng tiền: @(Model != null && Model.Any() ? Model.Sum(item=>item.ThanhTien).ToString("N0") : "0") VND
+            </div>
+
+            <a href="@Url.Action("ThanhToan","GioHang")" class="pointer-unset">
+                <button class="btn-checkout">Thanh toán</button>
+            </a>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    function capNhatSoLuong(MaSP, deltaSoLuong) {
+        // Lấy giá trị số lượng hiện tại
+        var inputElement = $(`input[data-id="${MaSP}"]`);
+        var currentQuantity = parseInt(inputElement.val());
+
+        // Kiểm tra số lượng sau khi thay đổi
+        var newQuantity = currentQuantity + deltaSoLuong;
+
+        // Nếu số lượng mới là 0, thì gọi hàm xóa sản phẩm khỏi giỏ hàng
+        if (newQuantity <= 0) {
+            xoaThanhPhanGioHang(MaSP);
+        } else {
+            // Ngược lại, gửi yêu cầu cập nhật số lượng
+            $.ajax({
+                url: '@Url.Action("CapNhatSoLuong", "GioHang")',
+                type: 'POST',
+                data: {
+                    MaSP: MaSP,
+                    SoLuong: deltaSoLuong
+                },
+                success: function(response) {
+                    location.reload(); // Cập nhật lại giỏ hàng sau khi thay đổi
+                },
+                error: function(error) {
+                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                }
+            });
+        }
+    }
+
+    function xoaThanhPhanGioHang(MaSP) {
+        if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?")) {
+            $.ajax({
+                url: '@Url.Action("XoaThanhPhanGioHang", "GioHang")',
+                data: { id: MaSP },
+                type: 'GET',
+                success: function(response) {
+                    location.reload(); // Cập nhật lại giỏ hàng sau khi xóa sản phẩm
+                },
+                error: function(error) {
+                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                }
+            });
+        }
+    }
+    </script>
+
+
+
+
+</body>
+</html>

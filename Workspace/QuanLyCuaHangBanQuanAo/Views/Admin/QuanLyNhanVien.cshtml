@@ -1,0 +1,101 @@
+﻿@using Project_QuanAo.Models;
+@model List<NhanVien>
+@{
+    var dbConnect = ViewBag.DBConnection;
+    ViewBag.Title = "QuanLyNhanVien";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var maLoaiTK = Session["MaLoaiTK"];
+    bool isAdmin = false;
+    if (maLoaiTK != null && ((int)maLoaiTK == 2 || (int)maLoaiTK == 3))
+    {
+        isAdmin = true;
+    }
+    if (!isAdmin)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/quanly.css">
+</head>
+<body>
+    <div class="content">
+        <section>
+            <div class="header-actions">
+                <div class="add-product-btn">
+                    <a href="@Url.Action("FormThemNhanVien", "Admin")">
+                        <button class="btn-add-product">Thêm nhân viên</button>
+                    </a>
+                </div>
+
+                <div class="search-container">
+                    <form action="@Url.Action("TimKiemNhanVien", "Admin")" method="get" id="searchForm">
+                        <div class="flex-row">
+                            <input type="text" name="tuKhoa" class="not-include search-bar" id="searchInp" />
+                            <span id="searchInp"></span>
+                            <button onclick="SubmitEvent">Tìm kiếm</button>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <h2>Quản lý nhân viên</h2>
+            @if (Model == null || !Model.Any())
+            {
+                <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                    Không có nhân viên nào phù hợp.
+                </p>
+            }
+            else
+            {
+                <p style="text-align: left; margin-left: 14px; font-style: italic; color: black;">
+                    Có @Model.Count nhân viên.
+                </p>
+            }
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th><h1>Mã nhân viên</h1></th>
+                        <th><h1>Họ</h1></th>
+                        <th><h1>Tên</h1></th>
+                        <th><h1>Ngày sinh</h1></th>
+                        <th><h1>Mã tài khoản</h1></th>
+                        <th><h1>Sửa</h1></th>
+                        <th><h1>Xoá</h1></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        <ul class="shop-pets">
+                            @foreach (NhanVien item in Model)
+                            {
+                                ConnectNhanVien cNV = new ConnectNhanVien(dbConnect);
+                            <tr>
+                                <td>@item.MaNV</td>
+                                <td>@item.Ho</td>
+                                <td>@item.Ten</td>
+                                <td>@item.NgaySinh</td>
+                                <td>@item.MaTK</td>
+                                <td><a href="@Url.Action("FormSuaNhanVien", "Admin", new { id = item.MaNV })">Sửa</a></td>
+                                <td>
+                                    <a href="@Url.Action("XoaNhanVien", "Admin", new { id = item.MaNV })"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');">
+                                        Xoá
+                                    </a> 
+                                </td>
+                            </tr>
+                        }
+                            </ul>
+                        }
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

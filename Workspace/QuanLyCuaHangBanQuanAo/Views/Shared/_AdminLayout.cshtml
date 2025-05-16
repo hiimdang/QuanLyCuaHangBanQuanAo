@@ -1,0 +1,90 @@
+﻿
+@{
+    Layout = null;
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bottom menu for admin panel</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .fixed-bottom-menu {
+            overflow: hidden;
+            background-color: #0747A6;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .table {
+            display: table;
+            margin: 0 auto;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            float: left;
+        }
+
+            li a {
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                margin: 5px 10px;
+                text-decoration: none;
+            }
+
+                li a:hover:not(.active) {
+                    background-color: #043379;
+                    border-radius: 50%;
+                }
+
+        .active {
+            background-color: #043379;
+            border-radius: 50%;
+        }
+
+        .main-content {
+            padding-bottom: 50px;
+        }
+    </style>
+</head>
+
+<body translate="no">
+    <div class="main-content">
+        @RenderBody()
+    </div>
+    <div class="fixed-bottom-menu">
+        <div class="table">
+            <ul>
+                <li><a class="active" title="Home" href="#"><i class="fa fa-home"></i></a></li>
+                <li><a href="@Url.Action("QuanLyNhanVien", "Admin")" title="Nhân viên"><i class="fa-solid fa-user-tie"></i></a></li>
+                <li><a href="@Url.Action("QuanLyKhachHang", "Admin")" title="Người dùng"><i class="fa-solid fa-users"></i></a></li>
+                <li><a href="@Url.Action("QuanLySanPham", "Admin")" title="Sản phẩm"><i class="fa-solid fa-shirt"></i></i></a></li>
+                <li><a href="@Url.Action("QuanLyNhaCungCap", "Admin")" title="Nhà cung cấp"><i class="fa-solid fa-industry"></i></a></li>
+                <li><a href="@Url.Action("QuanLyDonHang", "Admin")" title="Đơn hàng"><i class="fa-solid fa-list"></i></a></li>
+                <li><a href="@Url.Action("Index", "Home")" title="Thoát"><i class="fa-solid fa-right-from-bracket"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

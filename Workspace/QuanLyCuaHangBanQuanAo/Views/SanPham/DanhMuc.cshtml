@@ -1,0 +1,231 @@
+﻿
+@using Project_QuanAo.Models;
+@model List<SanPham>
+@{
+    ViewBag.Title = "DanhMuc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (TempData["Message"] != null)
+    {
+        <script>
+          alert(@Html.Raw($"'{TempData["Message"]}'"));
+        </script>
+    }
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .content {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .menu-danh-muc {
+            width: 20%;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-display {
+            width: 75%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-danh-muc h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .category-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .category-item {
+            margin-bottom: 10px;
+        }
+
+        .accordion-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            padding: 8px 0;
+            transition: color 0.3s;
+        }
+
+            .accordion-btn:hover {
+                color: #007bff;
+            }
+
+        .accordion-content {
+            display: none;
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+            .accordion-content li {
+                margin-bottom: 8px;
+            }
+
+                .accordion-content li a {
+                    text-decoration: none;
+                    color: #555;
+                }
+
+                    .accordion-content li a:hover {
+                        color: #007bff;
+                    }
+
+        .sort-options {
+            top: -20;
+            right: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .sort-options label {
+                font-weight: bold;
+            }
+
+        #sort-select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h2>Danh mục</h2>
+        <div class="content">
+            <div class="menu-danh-muc">
+                <h3>Danh mục sản phẩm</h3>
+                <div class="category-menu">
+                    <div class="category-item">
+                        <button class="accordion-btn">Áo</button>
+                        <ul class="accordion-content">
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo" })">Tất cả Áo</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo thun" })">Áo thun</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo polo" })">Áo polo</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo sơ mi" })">Áo sơ mi</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo khoác" })">Áo khoác</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo len" })">Áo len</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "áo hoodie" })">Áo hoodie</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="category-item">
+                        <button class="accordion-btn">Quần</button>
+                        <ul class="accordion-content">
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "quần" })">Tất cả Quần</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "quần jeans" })">Quần jeans</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "quần âu" })">Quần âu</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "quần short" })">Quần short</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="category-item">
+                        <button class="accordion-btn">Phụ kiện</button>
+                        <ul class="accordion-content">
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "phu-kien" })">Tất cả Phụ kiện</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "giày" })">Giày</a></li>
+                            <li><a href="@Url.Action("DanhMuc", "SanPham", new { loai = "dép" })">Dép</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-display">
+                <div class="sort-options">
+                    <label for="sort-select">Sắp xếp theo:</label>
+                    <select id="sort-select" onchange="sortProducts()">
+                        <option value="1" @(Request.QueryString["sortOrder"] == "1" ? "selected" : "")>Tên A-Z</option>
+                        <option value="2" @(Request.QueryString["sortOrder"] == "2" ? "selected" : "")>Tên Z-A</option>
+                        <option value="3" @(Request.QueryString["sortOrder"] == "3" ? "selected" : "")>Giá tăng dần</option>
+                        <option value="4" @(Request.QueryString["sortOrder"] == "4" ? "selected" : "")>Giá giảm dần</option>
+                    </select>
+
+                </div>
+                <ul class="shop-pets">
+                    @foreach (SanPham item in Model)
+                    {
+                        <li class="card-large card-light" id="sup-fish">
+                            <a href="@Url.Action("XemChiTiet", "SanPham", new { id = item.MaSP })">
+                                <div class="card-image">
+                                    <img src="@Url.Content("~/Images/" + item.DuongDanAnh)" />
+                                </div>
+                                <ul>
+                                    <div class="tenSP">
+                                        @item.LayTenCatNgan(item.TenSP)
+                                    </div>
+                                    <li><a href="@Url.Action("XemChiTiet", "SanPham", new { id = item.MaSP })">@item.GiaBan.ToString("N0")đ</a></li>
+                                    <button class="btn-outline-light" onclick="location.href='@Url.Action("ThemGioHang", "GioHang", new { msp = item.MaSP, strURL = Request.Url.PathAndQuery })'">
+                                        Mua ngay<span class="material-symbols-outlined">
+                                            arrow_forward
+                                        </span>
+                                    </button>
+                                </ul>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.querySelectorAll('.accordion-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const content = this.nextElementSibling;
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+    </script>
+
+    @*CLM cái script này thì đang ở tất cả sản phẩm thì sắp xếp được*@
+    <script>
+    function sortProducts() {
+        var sortOrder = document.getElementById("sort-select").value;
+        var url = '@Html.Raw(Url.Action("DanhMuc", "SanPham", new { loai = Request.QueryString["loai"], sortOrder = "__sortOrder__" }))'.replace('__sortOrder__', sortOrder);
+        window.location.href = url;
+    }
+    </script>
+
+    @*cái script này thì đang ở danh mục nào đó thì sắp xếp được*@
+    @*<script>
+        function sortProducts() {
+            var sortOrder = document.getElementById("sort-select").value;
+
+            // Lấy giá trị tham số 'loai' từ URL hiện tại
+            var urlParams = new URLSearchParams(window.location.search);
+            var loai = urlParams.get('loai'); // Lấy giá trị 'loai' từ query string
+
+            // Tạo URL mới
+            var url = '@Url.Action("DanhMuc", "SanPham")' + '?loai=' + encodeURIComponent(loai) + '&sortOrder=' + sortOrder;
+
+            // Chuyển hướng đến URL mới
+            window.location.href = url;
+        }
+        </script>*@
+
+
+</body>
+</html>

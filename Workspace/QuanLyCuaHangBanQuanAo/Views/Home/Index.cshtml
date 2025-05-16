@@ -1,0 +1,148 @@
+﻿@using Project_QuanAo.Models;
+@model List<SanPham>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (TempData["Error"] != null)
+    {
+        <script>
+          alert(@Html.Raw($"'{TempData["Error"]}'"));
+        </script>
+    }
+    if (TempData["Message"] != null)
+    {
+        <script>
+          alert(@Html.Raw($"'{TempData["Message"]}'"));
+        </script>
+    }
+}
+
+
+<section class="hero">
+    <h1>Shop Bảnh</h1>
+    <div class="btn-group">
+        <button class="btn-filled-dark" onclick="window.location.href='@Url.Action("DanhMuc", "SanPham")'">
+            <span class="material-symbols-outlined">
+                shopping_cart
+            </span>
+            Xem tất cả sản phẩm
+        </button>
+        @*<button class="btn-outline-dark btn-hover-color">
+            <span class="material-symbols-outlined">
+                calendar_month
+            </span> Book a Service
+        </button>*@
+    </div>
+</section>
+<section>
+    <h2>Outerity Collection</h2>
+    <ul class="shop-pets">
+        @{
+            var ids = new[] { "sup-dog", "sup-cat", "sup-bird", "sup-fish" }; }
+
+        @foreach (SanPham item in Model.Where(x => x.MaNCC == 1).Take(8))
+        {
+            var index = Model.IndexOf(item) % ids.Length;
+            var idValue = ids[index];
+
+            <li class="card-large card-light" id="@idValue">
+                <a href="@Url.Action("XemChiTiet", "SanPham", new { id = item.MaSP })">
+                    <div class="card-image">
+                        <img src="@Url.Content("~/Images/" + item.DuongDanAnh)" />
+                    </div>
+                    <ul>
+                        <div class="tenSP">
+                            @item.LayTenCatNgan(item.TenSP)
+                        </div>
+                        <li><a href="@Url.Action("XemChiTiet", "SanPham", new { id = item.MaSP })">@item.GiaBan.ToString("N0")đ</a></li>
+                        @*<button class="btn-outline-light">
+                                Mua ngay<span class="material-symbols-outlined">
+                                    arrow_forward
+                                </span>
+                            </button>*@
+
+                        <button class="btn-outline-light" onclick="location.href='@Url.Action("ThemGioHang", "GioHang", new { msp = item.MaSP, strURL = Request.Url.PathAndQuery })'">
+                            Mua ngay<span class="material-symbols-outlined">
+                                arrow_forward
+                            </span>
+                        </button>
+                    </ul>
+                </a>
+            </li>
+        }
+    </ul>
+
+    <div class="flex-div">
+        <div class="view-more-btn">
+            <button class="btn-outline-dark btn-hover-color" onclick="location.href='@Url.Action("DanhMuc", "SanPham")'">
+                Xem thêm
+            </button>
+        </div>
+    </div>
+
+</section>
+
+@*<section>
+    <h2>Our Services</h2>
+
+    <ul class="services">
+        <li class="card-large card-dark card-wide" id="serv-groom">
+            <div class="card-image">
+                <img src="https://ouch-cdn2.icons8.com/T11rfGmMKgcStJyAFKNgtOfE79cadabx0DVMnvzA9Pk/rs:fit:368:313/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvNDQx/LzFlYWU4MWY3LWQ1/ZjYtNDM2Ny1hZjM5/LWVmNTFmMGM5Njk4/MS5wbmc.png">
+            </div>
+            <ul>
+                Dog Grooming
+                <span class="subtitle">Tail-wagging transformations are our specialty.</span>
+                <li><a href="#">Coat Care</a><span>$80</span></li>
+                <li><a href="#">Nail Care</a><span>$16</span></li>
+                <li><a href="#">Doggie Deluxe Spa Day</a><span>$160</span></li>
+                <button class="btn-filled-dark">
+                    <span class="material-symbols-outlined">
+                        calendar_month
+                    </span>Book Now
+                </button>
+
+            </ul>
+
+
+        </li>
+        <li class="card-large card-dark card-wide" id="serv-board">
+            <div class="card-image">
+                <img src="https://ouch-cdn2.icons8.com/F5Ea1suZtMYimKDkJr0CJLO_1bju6-bTyT1EuDKEg8s/rs:fit:368:254/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvMjcx/LzVjMzE4NWM0LWZh/NTMtNGQ1OS05ZTM2/LTZjYzBhNGU3ODg0/NC5wbmc.png">
+            </div>
+            <ul>
+                Dog Boarding
+                <span class="subtitle">Where fun and care never take a day off.</span>
+                <li><a href="#">Doggie Daycare</a><span>$80</span></li>
+                <li><a href="#">Short Term Boarding</a><span>$80</span></li>
+                <button class="btn-filled-dark">
+                    <span class="material-symbols-outlined">
+                        calendar_month
+                    </span>Book Now
+                </button>
+            </ul>
+
+        </li>
+    </ul>
+</section>*@
+
+<section id="locate">
+
+    <div>
+        <h2>Location &amp; Hours</h2>
+        <p>
+            Bảnh shop làm việc 24/7 không kể những ngày lễ tết. Oách xà lách vô cùng
+        </p>
+        <div class="btn-group">
+            <button class="btn-filled-dark">
+                <span class="material-symbols-outlined">
+                    pin_drop
+                </span>Vị trí cửa hàng
+            </button>
+            <button class="btn-outline-dark btn-hover-color">
+                <span class="material-symbols-outlined">
+                    contact_support
+                </span> Liên hệ chúng tôi
+            </button>
+        </div>
+    </div>
+</section>

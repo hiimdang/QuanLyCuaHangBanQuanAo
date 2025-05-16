@@ -1,0 +1,58 @@
+﻿@using Project_QuanAo.Models;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var maLoaiTK = Session["MaLoaiTK"];
+    bool isAdmin = false;
+    if (maLoaiTK != null && ((int)maLoaiTK == 2 || (int)maLoaiTK == 3))
+    {
+        isAdmin = true;
+    }
+    if (!isAdmin)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Thêm nhân viên</title>
+    <link rel="stylesheet" href="~/Content/form.css">
+</head>
+<body>
+
+    <div class="container">
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert">
+                @ViewBag.Message
+            </div>
+        }
+
+        <form action="@Url.Action("ThemNhanVien", "Admin")" method="post" enctype="multipart/form-data">
+            <h1>Thêm nhân viên</h1>
+
+            <div class="form-group">
+                <input type="text" required="required" name="Ho" />
+                <label for="Ho" class="control-label">Họ *</label><i class="bar"></i>
+            </div>
+            <div class="form-group">
+                <input type="text" required="required" name="Ten" />
+                <label for="Ten" class="control-label">Tên *</label><i class="bar"></i>
+            </div>
+            <div class="form-group">
+                <input type="date" required="required" name="NgaySinh" />
+                <label for="NgaySinh" class="control-label">Ngày sinh</label><i class="bar"></i>
+            </div>
+            <div class="form-group">
+                <input type="number" required="required" min="0" name="MaTK" />
+                <label for="MaTK" class="control-label">Mã tài khoản *</label><i class="bar"></i>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="button"><span>Submit</span></button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

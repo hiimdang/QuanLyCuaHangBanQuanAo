@@ -1,0 +1,100 @@
+﻿
+@{
+    var maTK = Session["MaTK"];
+    if (maTK != null)
+    {
+        Response.Redirect(Url.Action("Index", "Home"));
+    }
+    ViewBag.Title = "DangNhap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+
+    <link rel="stylesheet" href="~/Content/dang-nhap.css">
+</head>
+
+<body translate="no">
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form action="@Url.Action("DangKy", "DangNhap")" method="post">
+                <h1>Đăng ký</h1>
+                <!-- <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+    </div> -->
+                <span>bằng những thông tin này</span>
+                <input type="text" placeholder="Họ và tên" class="not-include" required name="HoVaTen">
+                <input type="text" placeholder="Tên đăng nhập" class="not-include" required name="TenDangNhap">
+                <input type="email" placeholder="Email" class="not-include" required name="Email">
+                <input type="text" placeholder="Số điện thoại" class="not-include" required name="SoDienThoai">
+                <input type="password" placeholder="Mật khẩu" class="not-include" required name="MatKhau">
+                <label for="ngaySinh">Ngày sinh</label>
+                <input type="date"class="not-include" placeholder="Ngày sinh" required name="NgaySinh">
+                <button>Sign Up</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form action="@Url.Action("DangNhap", "DangNhap")" method="post">
+                <div class="alert">
+                    @ViewBag.Error
+                </div>
+                <div class="message">
+                    @ViewBag.Message
+                </div>
+                <h1>Đăng nhập</h1>
+                <!-- <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+    </div> -->
+                <span>Với tài khoản của bạn</span>
+                <input type="text" name="TenDangNhap" placeholder="Tên đăng nhập" class="not-include" required>
+                <input type="password" name="MatKhau" placeholder="Password" class="not-include" required>
+                <a href="#">Quên mật khẩu?</a>
+                <button>Đăng nhập</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Chào mừng trở lại!</h1>
+                    <p>Tiếp tục chuyến hành trình của tôi bằng cách đăng nhập</p>
+                    <button class="ghost" id="signIn">Đăng nhập</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Xin chào!</h1>
+                    <p>Hãy nhập thông tin của bạn và tham gia chuyến hành trình cùng với chúng tôi</p>
+                    <button class="ghost" id="signUp">Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="rendered-js">
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+//# sourceURL=pen.js
+    </script>
+
+
+
+
+
+</body>
+</html>
+

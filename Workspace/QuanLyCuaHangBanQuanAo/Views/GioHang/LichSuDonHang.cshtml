@@ -1,0 +1,71 @@
+﻿@using Project_QuanAo.Models;
+@model List<HoaDon>
+@{
+    ViewBag.Title = "Lịch sử đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var dbConnect = ViewBag.dbConnect;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/gio-hang.css">
+    <style>
+        .right-flex-row {
+            display: flex;
+            justify-content: right;
+        }
+    </style>
+</head>
+<body>
+    <section class="body">
+        <h2>Lịch sử đơn hàng</h2>
+        <div class="right-flex-row">
+            <a href="@Url.Action("Index","GioHang")" class="pointer-unset">
+                <button class="btn-confirm not-include">Về lại giỏ</button>
+            </a>
+        </div>
+
+        <table class="container">
+            <thead>
+                <tr>
+                    <th><h1>Mã đơn hàng</h1></th>
+                    <th><h1>Ngày đặt</h1></th>
+                    <th><h1>Địa Chỉ Giao Hàng</h1></th>
+                    <th><h1>Tổng tiền</h1></th>
+                    <th><h1>Trạng Thái Đơn</h1></th>
+                    @*<th><h1>Xem chi tiết</h1></th>*@
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null && Model.Any())
+                {
+                    foreach (HoaDon item in Model)
+                    {
+                        ConnectHoaDon cHD = new ConnectHoaDon(dbConnect);
+                        string NgayDat = item.NgayDat.ToString("dd/MM/yyyy");
+
+                        <tr>
+                            <td>@item.MaHD</td>
+                            <td>@NgayDat</td>
+                            <td>@item.DiaChiGiaoHang</td>
+                            <td>@item.TongTien</td>
+                            <td>@cHD.LayTenTrangThaiDon(item.MaTTD)</td>
+                            @*<td><a href="#">Xem chi tiết</a></td>*@
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Không có lịch sử đặt hàng.</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

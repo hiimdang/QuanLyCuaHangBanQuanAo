@@ -1,0 +1,68 @@
+﻿@using Project_QuanAo.Models;
+@{
+    ViewBag.Title = "XemChiTiet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sp = ViewBag.SanPham as SanPham;
+    if (TempData["Message"] != null)
+    {
+        <script>
+          alert(@Html.Raw($"'{TempData["Message"]}'"));
+        </script>
+    }
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+
+    <title>Product Page</title>
+
+
+
+    <link rel="stylesheet" href="~/Content/chi-tiet-san-pham.css">
+</head>
+@{ 
+    string GiaBan = sp.GiaBan.ToString("#,##0") + " VND";
+}
+<body translate="no">
+    <div class="container">
+        <div class="product">
+            <div class="product-photo">
+                <img src="~/Images/@sp.DuongDanAnh">
+                <img src="~/Images/@sp.DuongDanAnh">
+            </div>
+            <div class="product-detail">
+                <h1 class="product__title">@sp.TenSP</h1>
+                <div class="product__price">@GiaBan</div>
+                <ul class="ul not-include"">
+                    <li class="li not-include"">
+                        <button class="btn-outline-light not-include green-background" onclick="location.href='@Url.Action("ThemGioHang", "GioHang", new { msp = @sp.MaSP, strURL = Request.Url.PathAndQuery })'">
+                            Thêm vào giỏ hàng<span class="material-symbols-outlined">
+                                arrow_forward
+                            </span>
+                        </button>
+                    </li>
+                    <li class="li not-include">
+                        <button class="btn-outline-light not-include blue-background" onclick="location.href='@Url.Action("Index", "Home")'">
+                            Mua sắm tiếp<span class="material-symbols-outlined">
+                                arrow_forward
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+                <h2 class="product__title2">Mô tả:</h2>
+                <div class="product__subtitle" style="white-space: pre-line" id="mota">@sp.MoTa</div>
+            </div>
+        </div>
+    </div>
+
+    <script id="rendered-js">
+        const button = document.querySelector('.product__button');
+
+        function buttonAnimate() {
+            button.classList.add('product__button--success');
+        }
+    </script>
+</body>
+</html>
